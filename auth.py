@@ -1,5 +1,5 @@
 import jwt
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, render_template
 import datetime
 
 app = Flask(__name__)
@@ -19,7 +19,21 @@ def token_required(f):
 		return f(*args, **kwargs)
 	return decorated
 
+@app.route("/search")
+def search():
+    return render_template("search.html")
 
+@app.route('/read-form', methods=['POST']) 
+def read_form(): 
+  
+    # Get the form data as Python ImmutableDict datatype  
+    data = request.form 
+    file_name = data['username']
+    ## Return the extracted information
+    return f'<a href="http://localhost:5000/get_file?{file_name}">Private link</a>'
+
+
+    
 @app.route("/login")
 def login():
 	auth = request.authorization
@@ -33,11 +47,8 @@ def login():
 @app.route("/access")
 @token_required
 def access():
-	out = jsonify({'message': 'valid jwt token'})
-	file_name=input('File Search..')
-	print(file=file_name)
 
-	return out
+	return f'<a href="http://localhost:5000/search">Go to Search Service</a>'
 
 if __name__ == "__main__":
 	app.run()

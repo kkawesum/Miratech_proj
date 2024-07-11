@@ -13,8 +13,8 @@ conn.cursor().execute("CREATE SCHEMA IF NOT EXISTS testschema_mg")
 conn.cursor().execute(
     "CREATE TABLE IF NOT EXISTS "
     "EMPLOYEE_1(ID STRING, " +
-    "    CREATION_DATE TIMESTAMP, " +
-    "    MODIFICATION_DATE TIMESTAMP, " +
+    "    CREATION_DATE string, " +
+    "    MODIFICATION_DATE string, " +
     "    FIRST_NAME string, " +
     "    LAST_NAME string, " +
     "    COMPANY_NAME string, " +
@@ -29,12 +29,17 @@ conn.cursor().execute(
     "    WEB string )" 
     )
 
-
+conn.cursor().execute(
+    "CREATE TABLE IF NOT EXISTS "
+    "HISTORY_TEMP(CREATION_DATE STRING, " +
+    "    TABLE_NAME string, " +
+    "    UPDATE_TEXT variant )" 
+    )
 conn.cursor().execute(
     "CREATE TABLE IF NOT EXISTS "
     "HISTORY_TABLE(ID_INGESTION STRING, " +
     "    ID STRING, " +
     "    CREATION_DATE TIMESTAMP, " +
     "    TABLE_NAME string, " +
-    "    UPDATE_TEXT string )" 
+    "    UPDATE_TEXT variant )" 
     )
