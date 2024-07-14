@@ -3,13 +3,10 @@ import snowflake.connector
 
 
 conn = snowflake.connector.connect(
-    account="MGQICTC-TA52838",
-    user= "kislaymayuri",
-    password= "Xanthis@07"
+    account=os.getenv("SF_ACCOUNT"),
+    user= os.getenv("SF_USER"),
+    password= os.getenv("SF_PASSWORD")
     
 )
 
-sql = "select current_time"
-res=conn.cursor().execute(sql).fetchone()
-
-print('çonnected...',res)
+print('çonnected...')

@@ -1,11 +1,16 @@
 import jwt
+import os
 from flask import Flask, request, jsonify, make_response, render_template
 import datetime
+from snowflake_conn import conn
+import base64
+from aws_conn import check_file
+from ingestion import ingest_sf
 
 app = Flask(__name__)
 
 app.config['secret_key'] = "this is secret"
-
+file_searched=''
 
 def token_required(f):
 	def decorated(*args, **kwargs):
@@ -33,7 +38,19 @@ def read_form():
     return f'<a href="http://localhost:5000/get_file?{file_name}">Private link</a>'
 
 
-    
+
+@app.route("/get_file/{file_name}")
+def get_file(file_name):
+	global file_searched
+	file_searched = file_name
+	if(check_file(file_name=file_name)):
+		ingest_sf(file_name)
+	return base64.urlsafe_b64encode(os.urandom(32))
+
+@app.route('/')
+def index():
+	return render_template("home.html")
+
 @app.route("/login")
 def login():
 	auth = request.authorization
