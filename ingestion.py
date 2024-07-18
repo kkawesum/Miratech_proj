@@ -5,8 +5,12 @@ import base64
 import asyncio
 from auth import file_searched
 
+
 async def ingest_sf(file_name):
-	conn.cursor().execute(f"""
+    """
+    Asynchronously copy file from external location to a Snowflake table 
+    """
+    conn.cursor().execute(f"""
     COPY INTO TESTDB_MG.PUBLIC.HISTORY_TEMP FROM s3://miratech-project/{file_name}
     STORAGE_INTEGRATION = s3_int
     on_error=continue
@@ -18,7 +22,10 @@ async def ingest_sf(file_name):
     )
       
       
-async def update_hist(ingestion_id,file_name):    
+async def update_hist(ingestion_id,file_name):
+    """
+    Update the history table in snowflake using the history temp table
+    """    
     conn.cursor().execute(f"""INSERT INTO TESTDB_MG.PUBLIC.HISTORY(INGESTION_ID,ID,CREATION_DATE,TABLE_NAME,UPDATE_)
     SELECT
 	{ingestion_id},
@@ -40,7 +47,10 @@ async def update_hist(ingestion_id,file_name):
 
 
 async def pop_employee(file_name):
-	conn.cursor().execute(f"""INSERT INTO TESTDB_MG.PUBLIC.EMPLOYEE_1(id,creation_date,modification_date,first_name,last_name,company_name, address,city,country,state,zip,phone1,phone2,
+    """
+    Insert into employee table from history temp table
+    """
+    conn.cursor().execute(f"""INSERT INTO TESTDB_MG.PUBLIC.EMPLOYEE_1(id,creation_date,modification_date,first_name,last_name,company_name, address,city,country,state,zip,phone1,phone2,
 email,web)
 SELECT
 parse_json(UPDATE_TEXT):"id"::varchar AS idddd,
@@ -69,6 +79,12 @@ FROM
 
 
 async def main():
+    """
+    Create 3 tasks and run asynchronously- 
+    1. for ingesting to history temp in snowflake
+    2. for populating employee table 
+    3. for updating history table with ingestion_id
+    """
     tasks = []
     async with asyncio.TaskGroup() as tg:
         task = tg.create_task(ingest_sf(file_searched))

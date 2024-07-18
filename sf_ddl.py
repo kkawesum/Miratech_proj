@@ -1,9 +1,6 @@
 from snowflake_conn import conn
-import os
-import snowflake.connector
 
-
-
+# set default envs and set up the ddls of employee,history and history_temp table
 
 conn.cursor().execute("CREATE WAREHOUSE IF NOT EXISTS tiny_warehouse_mg")
 conn.cursor().execute("CREATE DATABASE IF NOT EXISTS testdb_mg")

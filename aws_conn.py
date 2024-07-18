@@ -3,6 +3,9 @@ import os
 from auth import file_searched
 
 class AWSConn():
+    '''
+    Establish an AWS connection using access keys and check whether the requested file exists
+    '''
     def conn_aws():
         AWS_S3_CREDS = {
             "aws_access_key_id":os.getenv("AWS_ACCESS_KEY"),
