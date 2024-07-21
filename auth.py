@@ -2,10 +2,11 @@ import jwt
 import os
 from flask import Flask, request, jsonify, make_response, render_template, abort
 import datetime
-from snowflake_conn import conn
+from snowflake_conn import connect
 import base64
-from aws_conn import check_file
-from ingestion import ingest_sf
+import asyncio
+from aws_conn import check_file,AWSConn
+from ingestion import ingest_sf, main
 
 app = Flask(__name__)
 # secret key for encoding 
@@ -41,6 +42,9 @@ def get_paginated_list(results, url, start, limit):
     obj['results'] = results[(start - 1):(start - 1 + limit)]
     return obj
 
+@app.route("/ingest")
+async def ingest():
+	main()
 
 def token_required(f):
 	'''

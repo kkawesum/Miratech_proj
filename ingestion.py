@@ -22,7 +22,7 @@ async def ingest_sf(file_name):
     )
       
       
-async def update_hist(ingestion_id,file_name):
+def update_hist(ingestion_id,file_name):
     """
     Update the history table in snowflake using the history temp table
     """    
@@ -46,7 +46,7 @@ async def update_hist(ingestion_id,file_name):
 
 
 
-async def pop_employee(file_name):
+def pop_employee(file_name):
     """
     Insert into employee table from history temp table
     """
@@ -80,22 +80,18 @@ FROM
 
 async def main():
     """
-    Create 3 tasks and run asynchronously- 
+    Create a task and run asynchronously- 
     1. for ingesting to history temp in snowflake
-    2. for populating employee table 
-    3. for updating history table with ingestion_id
     """
     tasks = []
     async with asyncio.TaskGroup() as tg:
         task = tg.create_task(ingest_sf(file_searched))
         tasks.append(task)
-        task2 = tg.create_task(pop_employee(file_searched))
-        tasks.append(task2)
-        ingestion_id = base64.urlsafe_b64encode(os.urandom(32))
-        task3 = tg.create_task(update_hist(ingestion_id,file_searched))
-        tasks.append(task3)
-		
+        
     results = [task.result() for task in tasks]
+    pop_employee(file_name=file_searched)
+    update_hist(results[0],file_name=file_searched)
+    
     return results
 
 if __name__ == "__main__":
