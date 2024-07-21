@@ -24,4 +24,14 @@ It will return a paginated list of updates, where every item contains all the hi
 6. Create unit tests for every class and function defined
 7. Ensure a code coverage of greater than 80% for the code.
 
+<h2>Starting the Application</h2>
+
+1. Start the app by running "auth.py". This is the entry point for our flask application.
+2. Upon starting the app, we land to the index page.
+3. We have to further navigate to the "/login" endpoint, it authenticates the user based on JWT token.
+4. On authentication, we will be given access to a Ingestion service("/ingest") which will allow us to establish an AWS connection and ingest the s3 contents to a Snowflake warehouse. 
+
+We are also given access to the Search service("/search") which is responsible for searching a file based on name.
+ 
+5. I am in the process of adding further modifications and improvements as well as new test cases.
    
